@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>osu!fx - {% block title %}{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="author" content="osu!fx Team">
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" />
+    </head>
+    <body>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="index.php?p=home">osu!fx</a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a href="{{ url_for('home') }}"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+                            <li><a href="#"><i class="fa fa-users" aria-hidden="true"></i> <strike>Forum</strike></a></li>
+                            <li><a href="{{ url_for('download') }}"><i class="fa fa-download" aria-hidden="true"></i> Download</a></li>
+                            <li><a href="#"><i class="fa fa-exclamation" aria-hidden="true"></i> <strike>Rules</strike></a></li>
+                            <li><a href="{{ url_for('help') }}"><i class="fa fa-info" aria-hidden="true"></i> Help</a></li>
+                            <li><a href="{{ url_for('faq') }}"><i class="fa fa-question" aria-hidden="true"></i> FAQ</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
+                                <ul class="dropdown-menu login-dp">
+                                    <li>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <form class="form" role="form" method="post" action="login" accept-charset="UTF-8" id="login-nav">
+                                                    <div class="form-group">
+                                                        <label class="sr-only">Username </label>
+                                                        <input type="email" class="form-control" placeholder="Username" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="sr-only">Password</label>
+                                                        <input type="password" class="form-control" placeholder="Password" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button type="submit" class="btn btn-info btn-block">Sign in</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="bottom text-center">
+                                                New here? <a href="{{ url_for('register') }}"><b>Join osufx!</b></a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        {% block body %}
+        {% endblock %}
+        <script src="{{ url_for('static', filename='js/jquery-1.10.2.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    </body>
+</html>

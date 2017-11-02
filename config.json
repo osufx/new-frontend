@@ -1,0 +1,7 @@
+{
+  "debug": "True",
+  "use_reloader": "true",
+  "threaded": "false",
+  "host": "127.0.0.1",
+  "port": 6969
+}
