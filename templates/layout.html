@@ -65,7 +65,11 @@
                                 {% else %}
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Welcome {{ logged_in.username }}</b> <span class="caret"></span></a>
                                 <ul class="dropdown-menu login-dp">
-                                    Stuff after login here...
+                                    <form method="post" action="{{ url_for('logout') }}">
+                                        <div class="bottom text-center">
+                                            <input type="submit" class="btn btn-info btn-block" value="Logout">
+                                        </div>
+                                    </form>
                                 </ul>
                                 {% endif %}
                             </li>
