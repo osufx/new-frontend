@@ -1,0 +1,3 @@
+PyMySQL==0.7.11
+Flask_ReCaptcha==0.4.2
+Flask==0.12.2
