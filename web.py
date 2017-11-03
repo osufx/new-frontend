@@ -1,6 +1,5 @@
 from flask import Flask, make_response, redirect, request, render_template, url_for
 import json
-import hashlib
 import datetime
 from helpers import mysql, hash, checks
 
@@ -8,7 +7,6 @@ with open("config.json", "r") as f:
     config = json.load(f)
 
 app = Flask(__name__)
-#app.secret_key = config["secret_key"]
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -20,24 +18,32 @@ def home():
 @app.route('/download/', methods=['GET', 'POST'])
 def download():
 
-    return render_template('download.html')
+    logged_in = checks.is_logged_in(request)
+
+    return render_template('download.html', logged_in=logged_in)
 
 
 @app.route('/faq/', methods=['GET', 'POST'])
 def faq():
 
-    return render_template('faq.html')
+    logged_in = checks.is_logged_in(request)
+
+    return render_template('faq.html', logged_in=logged_in)
 
 
 @app.route('/help/', methods=['GET', 'POST'])
 def help():
 
-    return render_template('help.html')
+    logged_in = checks.is_logged_in(request)
+
+    return render_template('help.html', logged_in=logged_in)
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
 
-    return render_template('register.html')
+    logged_in = checks.is_logged_in(request)
+
+    return render_template('register.html', logged_in=logged_in)
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -60,7 +66,31 @@ def login():
 
             return response
 
-    return 'ERROR'
+    return redirect(url_for('home'))
+
+@app.route('/logout/', methods=['GET', 'POST'])
+def logout():
+
+    if request.method == 'POST':
+
+        if checks.is_logged_in(request):
+
+            red = make_response(redirect(url_for('home')))
+            red.set_cookie('username', '', expires=0)
+            red.set_cookie('password', '', expires=0)
+
+            return red
+
+        else:
+
+            return redirect(url_for('home'))
+
+    return redirect(url_for('home'))
+
+@app.errorhandler(404)
+def not_found(error):
+
+    return 'This is error page...'
 
 if __name__ == "__main__":
 
