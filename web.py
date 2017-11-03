@@ -1,4 +1,5 @@
 from flask import Flask, make_response, redirect, request, render_template, url_for
+from flask_recaptcha import ReCaptcha
 import json
 import datetime
 from helpers import mysql, hash, checks
@@ -6,7 +7,11 @@ from helpers import mysql, hash, checks
 with open("config.json", "r") as f:
     config = json.load(f)
 
+with open("recaptcha.json", "r") as f:
+    rconfig = json.load(f)
+
 app = Flask(__name__)
+recaptcha = ReCaptcha(app=app, **rconfig)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -43,7 +48,37 @@ def register():
 
     logged_in = checks.is_logged_in(request)
 
-    return render_template('register.html', logged_in=logged_in)
+    if logged_in:
+
+        return redirect(url_for('home'))
+
+    if request.method == 'POST':
+
+        if not recaptcha.verify():
+
+            return 'Captcha error'
+
+        username = request.form['username']
+
+        if checks.does_user_exist(username):
+
+            return 'Username in db'
+
+        password = hash.password(request.form['password'])
+
+        if password != hash.password(request.form['rpassword']):
+
+            return 'Password do not match'
+
+        email = request.form['email']
+
+        connection, cursor = mysql.connect()
+
+        mysql.execute(connection, cursor, "INSERT INTO `users` (`username`, `password`, `email`) VALUES (%s, %s, %s)", [username, password, email])
+
+        return redirect(url_for('home'))
+
+    return render_template('register.html', logged_in=logged_in, recaptcha=recaptcha.get_code())
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -57,14 +92,33 @@ def login():
 
             hashed_password = hash.password(password)
 
-            expire_date = datetime.datetime.now()
-            expire_date = expire_date + datetime.timedelta(days=90)
+            if checks.does_user_exist(username):
 
-            response = make_response(redirect('/'))
-            response.set_cookie('username', username, expires=expire_date)
-            response.set_cookie('password', hashed_password, expires=expire_date)
+                connection, cursor = mysql.connect()
+                check_password = mysql.execute(connection, cursor, "SELECT password FROM users WHERE username = %s", [username]).fetchone()
 
-            return response
+                if check_password["password"] == hashed_password:
+
+                    expire_date = datetime.datetime.now()
+                    expire_date = expire_date + datetime.timedelta(days=90)
+
+                    response = make_response(redirect('/'))
+                    response.set_cookie('username', username, expires=expire_date)
+                    response.set_cookie('password', hashed_password, expires=expire_date)
+
+                    return response
+
+                else:
+
+                    return 'Wrong password'
+
+            else:
+
+                return 'Wrong username'
+
+        else:
+
+            return 'Please fill the form'
 
     return redirect(url_for('home'))
 
