@@ -1,7 +1,7 @@
 from helpers import mysql
 
-def is_logged_in(request):
 
+def is_logged_in(request):
     username = request.cookies.get('username')
     password = request.cookies.get('password')
 
@@ -13,11 +13,18 @@ def is_logged_in(request):
 
         return False
 
-def does_user_exist(username):
 
+def does_user_exist(username=None, email=None):
     connection, cursor = mysql.connect()
 
-    search = mysql.execute(connection, cursor, "SELECT username FROM users WHERE username = %s", [username]).fetchone()
+    if username:
+        search = mysql.execute(connection, cursor,
+                               "SELECT username FROM users WHERE username = %s",
+                               [username]).fetchone()
+    else:
+        search = mysql.execute(connection, cursor,
+                               "SELECT username FROM users WHERE email = %s",
+                               [email]).fetchone()
 
     if search != None and len(search) > 0:
 
