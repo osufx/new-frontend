@@ -13,6 +13,13 @@ def is_logged_in(request):
 
         return False
 
+def is_activated(username):
+
+    connection, cursor = mysql.connect()
+
+    lookup = mysql.execute(connection, cursor, "SELECT active FROM users WHERE username = %s", [username]).fetchone()
+
+    return lookup['active']
 
 def does_user_exist(username=None, email=None):
     connection, cursor = mysql.connect()
