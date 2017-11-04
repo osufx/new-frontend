@@ -20,8 +20,13 @@ nav{
     background: url('../img/header.png');
 }
 
+nav a{
+    transition: width 2s !important;
+}
+
 nav a:hover, a:active, a:focus{
     background: rgba(25,25,25,0.5)!important;
+    transition: width 2s !important;
 }
 
 .panel-primary{
@@ -139,4 +144,9 @@ blockquote h5{
 .btn-tw:hover{
     color: #fff;
     background-color:#59b5fa;
+}
+
+.alert-danger{
+    background: url('../img/header.png') !important;
+    border: none;
 }
