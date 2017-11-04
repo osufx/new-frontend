@@ -10,6 +10,7 @@
         <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
         <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
         <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" />
+        <script src='https://www.google.com/recaptcha/api.js' async defer></script>
     </head>
     <body>
         <nav class="navbar navbar-default navbar-fixed-top">
@@ -78,6 +79,24 @@
                 </div>
             </div>
         </nav>
+        <div class="cover">
+            <h1>{% block cover_title %}{% endblock %}</h1>
+            <h2>{% block cover_text %}{% endblock %}</h2>
+        </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="container">
+            <div class="flash-error">
+                <div class="alert alert-dismissible alert-danger">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {% for message in messages %}
+                        {{ message }} <br>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
         {% block body %}
         {% endblock %}
         <script src="{{ url_for('static', filename='js/jquery-1.10.2.min.js') }}"></script>
