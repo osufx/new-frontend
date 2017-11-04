@@ -2,5 +2,6 @@
   "site_key": "",
   "secret_key": "",
   "is_enabled": true,
-  "size": "invisible"
+  "size": "normal",
+  "theme": "light"
 }
