@@ -8,10 +8,9 @@ from helpers import mysql, hash, checks, recaptcha
 with open("config.json", "r") as f:
     config = json.load(f)
 
-with open("recaptcha.json", "r") as f:
-    rconfig = json.load(f)
-
 app = Flask(__name__)
+app.secret_key = ''
+
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -76,16 +75,20 @@ def register():
 
                 else:
                     connection, cursor = mysql.connect()
+                    avatar = "0.png"
+                    activate = 0
+                    email_key = hash.email_key()
                     mysql.execute(connection, cursor,
-                                  "INSERT INTO `users` (`username`, `password`, `email`) VALUES (%s, %s, %s)",
-                                  [username, password, email])
+                                  '''INSERT INTO `users` (`username`, `password`, `email`, `avatar`, `active`, `email_key`) 
+                                  VALUES (%s, %s, %s, %s, %s, %s)''',
+                                  [username, password, email, avatar, activate, email_key])
                     flash('Your account is created, please login.')
                     return redirect(url_for('home'))
 
     return render_template('register.html', logged_in=logged_in)
 
 
-@app.route('/login/', methods=['GET', 'POST'])
+@app.route('/login/', methods=['POST'])
 def login():
     if request.method == 'POST':
 
@@ -98,26 +101,31 @@ def login():
 
             if checks.does_user_exist(username):
 
-                connection, cursor = mysql.connect()
-                check_password = mysql.execute(connection, cursor,
-                                               "SELECT password FROM users WHERE username = %s",
-                                               [username]).fetchone()
+                if checks.is_activated(username) == 0:
 
-                if check_password["password"] == hashed_password:
-
-                    expire_date = datetime.datetime.now()
-                    expire_date = expire_date + datetime.timedelta(days=90)
-
-                    response = make_response(redirect('/'))
-                    response.set_cookie('username', username, expires=expire_date)
-                    response.set_cookie('password', hashed_password, expires=expire_date)
-                    flash('You login successfully.')
-
-                    return response
+                    flash('User not activated, please check your email.')
 
                 else:
+                    connection, cursor = mysql.connect()
+                    check_password = mysql.execute(connection, cursor,
+                                                   "SELECT password FROM users WHERE username = %s",
+                                                   [username]).fetchone()
 
-                    flash('Wrong password')
+                    if check_password["password"] == hashed_password:
+
+                        expire_date = datetime.datetime.now()
+                        expire_date = expire_date + datetime.timedelta(days=90)
+
+                        response = make_response(redirect('/'))
+                        response.set_cookie('username', username, expires=expire_date)
+                        response.set_cookie('password', hashed_password, expires=expire_date)
+                        flash('You login successfully.')
+
+                        return response
+
+                    else:
+
+                        flash('Wrong password')
 
             else:
 
@@ -129,8 +137,25 @@ def login():
 
     return redirect(url_for('home'))
 
+@app.route('/activate/<key>/')
+def email_activate(key):
+    logged_in = checks.is_logged_in(request)
 
-@app.route('/logout/', methods=['GET', 'POST'])
+    connection, cursor = mysql.connect()
+    find_user = mysql.execute(connection, cursor, "SELECT email_key FROM users WHERE email_key = %s", [key]).fetchone()
+
+    if find_user:
+
+        mysql.execute(connection, cursor, "UPDATE users SET active = 1, email_key = '' WHERE email_key = %s", [key])
+        flash('Your account is activated! Please login.')
+
+    else:
+
+        flash('Key not found!')
+
+    return render_template('index.html', logged_in=logged_in)
+
+@app.route('/logout/', methods=['POST'])
 def logout():
     if request.method == 'POST':
 
