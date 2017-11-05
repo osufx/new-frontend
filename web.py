@@ -39,6 +39,11 @@ def help():
 
     return render_template('help.html', logged_in=logged_in)
 
+@app.route('/rs/', methods=['GET', 'POST'])
+def rs():
+    logged_in = checks.is_logged_in(request)
+
+    return render_template('reportbug.html', logged_in=logged_in)
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
