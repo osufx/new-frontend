@@ -99,7 +99,7 @@ blockquote h5{
     min-width: 250px;
     padding: 14px 14px 0;
     overflow:hidden;
-    height: 200px;
+    height: auto;
     background: url('../img/header.png');
 }
 
@@ -149,4 +149,49 @@ blockquote h5{
 .alert-danger{
     background: url('../img/header.png') !important;
     border: none;
+}
+
+.profile {
+    margin-bottom: 10px;
+}
+
+.profile-sidebar{
+    padding: 5px 0 5px 0;
+}
+
+.profile-userpic img{
+    float: left;
+    width: 100px;
+    height: 100px;
+    border: 1px solid purple;
+}
+
+.profile-usertitle{
+    float: left;
+    padding: 4px;
+}
+
+.profile-usertitle-name{
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+.profile-usertitle-job{
+    text-transform: uppercase;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.profile-links a{
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.profile-links a:hover{
+    background: none;
 }
