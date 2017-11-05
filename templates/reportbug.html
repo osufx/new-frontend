@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% block title %} Bug report {% endblock %}
+{% block cover_title %} Bug report {% endblock %}
+{% block cover_text %}  {% endblock %}
+{% block body %}
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Form</h3>
+        </div>
+        <div class="panel-body">
+            {% if logged_in == False %}
+            Please login to report or suggest.
+            {% else %}
+            <form>
+                <div class="form-group">
+                    <label for="exampleTextarea">Text (explain what is your problem or your suggestion)</label>
+                    <textarea class="form-control" id="exampleTextarea"
+                              rows="3"></textarea>
+                </div>
+                <input type="submit" class="btn btn-info" value="Submit">
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock  %}
